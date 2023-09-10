@@ -2,3 +2,13 @@
 const nextConfig = {}
 
 module.exports = nextConfig
+module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd.ifengimg.com',
+      },
+    ],
+  },
+}
