@@ -4,7 +4,7 @@ import Image from "next/image"
 
 function Header() {
   return (
-    <div className="flex flex-row justify-between gap-10 px-10 py-4">
+    <div className="flex flex-row justify-between items-stretch gap-10 px-10 py-4">
       <Image
         src="/opt_full.png"
         alt="Quix log"

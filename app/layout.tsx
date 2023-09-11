@@ -1,9 +1,21 @@
+'use client'
 import './globals.css'
 import Header from './components/Header/Header'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
+import { WagmiConfig, createConfig, mainnet } from 'wagmi'
+import { createPublicClient, http } from 'viem'
+
 const inter = Inter({ subsets: ['latin'] })
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient: createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  }),
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,11 +28,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
-      </body>
-    </html >
+    <WagmiConfig config={config}>
+      <html lang="en">
+        <body className={inter.className}>
+          <Header />
+          {children}
+        </body>
+      </html >
+    </WagmiConfig>
   )
 }
