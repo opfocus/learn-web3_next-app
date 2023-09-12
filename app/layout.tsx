@@ -1,21 +1,29 @@
 'use client'
+
 import './globals.css'
 import Header from './components/Header/Header'
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
-import { WagmiConfig, createConfig, mainnet } from 'wagmi'
-import { createPublicClient, http } from 'viem'
+import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
+import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [mainnet, optimism, goerli, optimismGoerli],
+  [publicProvider()], //We can add private provide here 
+)
+
 const config = createConfig({
   autoConnect: true,
-  publicClient: createPublicClient({
-    chain: mainnet,
-    transport: http(),
-  }),
+  publicClient,
+  webSocketPublicClient,
 })
+
+
 
 export const metadata: Metadata = {
   title: 'Create Next App',

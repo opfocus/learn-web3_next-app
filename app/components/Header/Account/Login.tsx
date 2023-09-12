@@ -1,18 +1,19 @@
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
 function Login() {
-  const { address } = useAccount()
+  const { address, isConnected } = useAccount()
+  const { data: ensName } = useEnsName({ address })
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
   const { disconnect } = useDisconnect()
 
-  if (address)
+  if (isConnected)
     return (
       <div className='w-20 text-center'>
 
-        <button onClick={() => disconnect()}>{address.slice(0, 6)}</button>
+        <button onClick={() => disconnect()}>{ensName ?? (address && address.slice(0, 6))}</button>
       </div>
     )
   return (
