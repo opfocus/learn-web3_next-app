@@ -1,8 +1,9 @@
-function Product() {
+function BridgePage() {
+
   return (
     <>
     </>
   )
 }
 
-export default Product
+export default BridgePage

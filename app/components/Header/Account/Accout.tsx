@@ -1,5 +1,5 @@
 
-import Login from "./Login"
+import Login from "./Login2"
 
 function Account() {
 
