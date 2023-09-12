@@ -7,23 +7,11 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
-import { createPublicClient, http } from 'viem'
-// add 
 import { publicProvider } from 'wagmi/providers/public'
 import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
 
 const inter = Inter({ subsets: ['latin'] })
 
-//dele
-// const config = createConfig({
-//   autoConnect: true,
-//   publicClient: createPublicClient({
-//     chain: mainnet,
-//     transport: http(),
-//   }),
-// })
-
-//replace
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, optimism, goerli, optimismGoerli],
   [publicProvider()], //We can add private provide here 
