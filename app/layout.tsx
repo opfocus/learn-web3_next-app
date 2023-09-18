@@ -7,14 +7,23 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
-import { publicProvider } from 'wagmi/providers/public'
 import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
 
+
+require('dotenv').config()
 const inter = Inter({ subsets: ['latin'] })
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, optimism, goerli, optimismGoerli],
-  [publicProvider()], //We can add private provide here 
+  [
+    alchemyProvider({ apiKey: process.env.ETH_MAINNET_APIKEY! }),
+    alchemyProvider({ apiKey: process.env.ETH_GOERLI_APIKEY! }),
+    alchemyProvider({ apiKey: process.env.OP_MAINNET_APIKEY! }),
+    alchemyProvider({ apiKey: process.env.OP_GOERLI_APIKEY! }),
+    publicProvider(),
+  ], //We can add private provide here 
 )
 
 const config = createConfig({

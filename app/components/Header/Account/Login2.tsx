@@ -6,19 +6,52 @@ import { Dialog, Transition } from '@headlessui/react'
 
 import Image from 'next/image'
 
-import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
+import { mainnet, useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+// import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+// import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+// import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-export default function Example() {
+import { goerli, optimism, optimismGoerli } from 'wagmi/dist/chains'
+
+export default function Login() {
   const [open, setOpen] = useState(false)
   const cancelButtonRef = useRef(null)
 
   const { address, isConnected } = useAccount()
   const { data: ensName } = useEnsName({ address })
+  const { disconnect } = useDisconnect()
+
+  // connect wallet
   const { connect } = useConnect({
     connector: new InjectedConnector(),
   })
-  const { disconnect } = useDisconnect()
+  // const connector = new CoinbaseWalletConnector({
+  //   chains: [mainnet, goerli, optimism, optimismGoerli],
+  //   options: {
+  //     appName: 'Quix App',
+  //     jsonRpcUrl: [
+  //       `https://eth-mainnet.g.alchemy.com/v2/${process.env.ETH_MAINNET_APIKET}`,
+  //       `https://eth-goerli.g.alchemy.com/v2/${process.env.ETH_GOERLI_APIKEY}`,
+  //       `https://opt-mainnet.g.alchemy.com/v2/${process.env.OP_MAINNET_APIKEY}`,
+  //       `https://opt-goerli.g.alchemy.com/v2/${process.env.OP_GOERLI_APIKEY}`
+  //     ]
+  //   }
+  // })
+
+  // const connector = new MetaMaskConnector()
+  // const connector = new WalletConnectConnector({
+  //   options: {
+  //     projectId: 'a83747f94dde941f9f5cb34fe68907aa',
+  //     metadata: {
+  //       name: 'Quix App',
+  //       description: 'my learn web3 app',
+  //       url: 'http://localhost:3000',
+  //       icons: ['https://wagmi.sh/icon.png'],
+  //     },
+  //   },
+  // })
+
   if (isConnected)
     return (
       <div className='w-20 text-center'>
