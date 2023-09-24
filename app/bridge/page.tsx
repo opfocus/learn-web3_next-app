@@ -1,12 +1,15 @@
 "use client"
-
+export interface DepositOrWithdrawProps {
+  isDeposit?: boolean;
+  setIsDeposit?: (value: boolean) => void; // 添加类型注解
+}
 
 import { useState } from "react"
-import AnotherNetwork from "./components/AnotherNetwork"
+import FromNetwork from "./components/fromNetwork"
 import Arrow from "./components/Arrow"
 import ConnectWallet from "./components/ConnectWallet"
 import DepositOrWithdraw from "./components/DepositOrWithdraw"
-import OpNetWork from "./components/OpNetwork"
+import OpNetWork from "./components/toNetwork"
 
 
 function BridgePage() {
@@ -19,23 +22,14 @@ function BridgePage() {
       <div className="flex flex-col gap-6 pt-8  w-full max-w-md ">
         {/* 1 bridge*/}
         <div className="bg-white mt-7 p-6  rounded-2xl shadow-2xl w-full ">
-          {isDeposit ?
-            <div>
-              <DepositOrWithdraw setIsDeposit={setIsDeposit} />
-              <AnotherNetwork />
-              <Arrow />
-              <OpNetWork />
-              <ConnectWallet />
-            </div>
-            :
-            <div>
-              <DepositOrWithdraw setIsDeposit={setIsDeposit} />
-              <OpNetWork />
-              <Arrow />
-              <AnotherNetwork />
-              <ConnectWallet />
-            </div>
-          }
+
+          <div>
+            <DepositOrWithdraw isDeposit={isDeposit} setIsDeposit={setIsDeposit} />
+            <FromNetwork isDeposit={isDeposit} />
+            <Arrow />
+            <OpNetWork isDeposit={isDeposit} />
+            <ConnectWallet />
+          </div>
         </div>
         {/* 2  get test token*/}
         <button className="flex flex-col gap-1 p-6 rounded-2xl w-full border border-gray-400  ">

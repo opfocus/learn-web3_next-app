@@ -1,15 +1,19 @@
-import Image from "next/image"
 
-function OpNetWork() {
+import { DepositOrWithdrawProps } from '../page'
+import EthereumMainnet from './ethereumMainnet'
+import OpMainnet from "./opMainnet"
+
+function ToNetwork({ isDeposit }: DepositOrWithdrawProps) {
 
   return (
     <div className="p-4 bg-gray-200 rounded-lg w-full">
       <div className=" flex flex-row justify-start items-center gap-2 ">
         To:
-        <Image src="/optimism.png" alt="optimism logo" width={24} height={24} className="rounded-full" />
-        <div className="text-sm font-semibold">
-          OP Mainnet
-        </div>
+        {isDeposit ?
+          <OpMainnet />
+          :
+          <EthereumMainnet />
+        }
       </div>
       <div className="flex flex-row justify-start items-center gap-2 pt-2">
         You will receive:
@@ -24,4 +28,4 @@ function OpNetWork() {
   )
 }
 
-export default OpNetWork
+export default ToNetwork
