@@ -62,14 +62,21 @@ export default function Login() {
 
   return (
     <>
-      <div className='w-20'>
+      {/* <div className='w-20'>
         <button
-          onClick={() => setOpen(true)}
-          className="bg-red-500 text-white rounded-full px-4 py-1.5"
+          
+          className="bg-red-500 text-white  px-4 py-1.5"
         >
           <strong>Connect</strong>
         </button>
-      </div>
+      </div> */}
+      <button className="flex justify-center mt-4 rounded-lg bg-red-500 p-4 w-full"
+        onClick={() => setOpen(true)}
+      >
+        <div className=" font-semibold text-white text-xl">
+          Connect wallet
+        </div>
+      </button>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
           <Transition.Child
