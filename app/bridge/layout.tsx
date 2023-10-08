@@ -5,7 +5,6 @@ function ProductLayout({
 }) {
   return (
     <div>
-      <h4>product layout here:</h4>
       {children}
     </div>
   )

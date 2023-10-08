@@ -22,7 +22,6 @@ function BridgePage() {
       <div className="flex flex-col gap-6 pt-8  w-full max-w-md ">
         {/* 1 bridge*/}
         <div className="bg-white mt-7 p-6  rounded-2xl shadow-2xl w-full ">
-
           <div>
             <DepositOrWithdraw isDeposit={isDeposit} setIsDeposit={setIsDeposit} />
             <FromNetwork isDeposit={isDeposit} />

@@ -5,12 +5,14 @@ import Image from "next/image"
 function Header() {
   return (
     <div className="flex flex-row justify-between items-stretch gap-10 px-10 py-4">
-      <Image
-        src="/opt_full.png"
-        alt="Quix log"
-        width={65}
-        height={40}
-      />
+      <div className="flex place-self-center">
+        <Image
+          src="/opt_full.png"
+          alt="Quix log"
+          width={80}
+          height={40}
+        />
+      </div>
       <Search />
       <Account />
     </div>

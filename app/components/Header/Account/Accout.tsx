@@ -5,7 +5,7 @@ function Account() {
 
 
   return (
-    <div className="flex flex-row gap-10 justify-between items-baseline">
+    <div className="flex flex-row gap-10 justify-between items-center">
       <div className="flex flex-row justify-between item-center gap-6">
         <strong>Explore</strong>
         <strong>Stat</strong>

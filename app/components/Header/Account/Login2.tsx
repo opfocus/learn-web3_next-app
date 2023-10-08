@@ -70,7 +70,7 @@ export default function Login() {
           <strong>Connect</strong>
         </button>
       </div> */}
-      <button className="flex justify-center mt-4 rounded-lg bg-red-500 p-4 w-full"
+      <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
         onClick={() => setOpen(true)}
       >
         <div className=" font-semibold text-white text-xl">

@@ -114,9 +114,9 @@ function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
       </div>
       <div className="mt-2">
         <div className="flex flex-row p-4 bg-white rounded-lg w-full border border-gray-500">
-          <div className="w-3/4  text-2xl font-bold">
-            0.0
-          </div>
+          <input type="text" className="w-3/4 text-2xl font-bold  focus:outline-none"
+            placeholder="0.0"
+          />
           <button className="w-1/4 flex flex-row gap-2 justify-center items-center">
             <Image src='/ethereum.png' alt="ethereum logo" width={24} height={24} className="rounded-full" />
             ETH

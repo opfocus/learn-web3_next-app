@@ -9,7 +9,9 @@ function ConnectWallet() {
     //     Connect wallet
     //   </div>
     // </button>
-    <Login />
+    <div className="mt-4">
+      <Login />
+    </div>
   )
 }
 
