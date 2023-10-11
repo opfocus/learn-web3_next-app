@@ -33,10 +33,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/components/Header/Account/NextAuth.js",
-    "app/components/Header/Account/NextAuth.js",
-    "app/components/Header/Account/Accout.jsx",
-    "app/components/Header/Account/NextAuth.js"
+    "app/components/Header/account/NextAuth.js",
+    "app/components/Header/account/NextAuth.js",
+    "app/components/Header/account/Accout.jsx",
+    "app/components/Header/account/NextAuth.js"
   ],
   "exclude": [
     "node_modules"

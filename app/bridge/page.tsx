@@ -6,8 +6,8 @@ export interface DepositOrWithdrawProps {
 
 import { useState } from "react"
 import FromNetwork from "./components/fromNetwork"
-import Arrow from "./components/Arrow"
-import ConnectWallet from "./components/ConnectWallet"
+import Arrow from "./components/arrow"
+import ConnectWallet from "./components/connectWallet"
 import DepositOrWithdraw from "./components/DepositOrWithdraw"
 import OpNetWork from "./components/toNetwork"
 

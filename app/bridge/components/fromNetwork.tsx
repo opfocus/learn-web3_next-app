@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 import { DepositOrWithdrawProps } from "../page"
 import OpMainnet from "./opMainnet"
+import { balanceGoerli } from "@/app/components/Header/account/login"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -14,10 +15,9 @@ function classNames(...classes: string[]) {
 function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
 
   return (
-    <div className="p-4 bg-gray-200 rounded-lg">
-      <div className=" flex flex-row justify-start items-center">
-
-        <div className="p-2">
+    <div className="flex flex-col gap-2 p-4 bg-gray-200 rounded-lg">
+      <div className=" flex flex-row justify-start items-center ">
+        <div className="pr-2">
           From:
         </div>
         {isDeposit ?
@@ -112,19 +112,20 @@ function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
           <OpMainnet />
         }
       </div>
-      <div className="mt-2">
-        <div className="flex flex-row p-4 bg-white rounded-lg w-full border border-gray-500">
-          <input type="text" className="w-3/4 text-2xl font-bold  focus:outline-none"
-            placeholder="0.0"
-          />
-          <button className="w-1/4 flex flex-row gap-2 justify-center items-center">
-            <Image src='/ethereum.png' alt="ethereum logo" width={24} height={24} className="rounded-full" />
-            ETH
-            <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-            </svg>
-          </button>
-        </div>
+      <div className="flex flex-row p-4 bg-white rounded-lg w-full border border-gray-500">
+        <input type="text" className="w-3/4 text-2xl font-bold  focus:outline-none"
+          placeholder="0.0"
+        />
+        <button className="w-1/4 flex flex-row gap-2 justify-center items-center">
+          <Image src='/ethereum.png' alt="ethereum logo" width={24} height={24} className="rounded-full" />
+          ETH
+          <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      <div>
+        Balance: {balanceGoerli} ETH
       </div>
     </div>
   )

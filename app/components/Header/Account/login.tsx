@@ -2,74 +2,68 @@
 
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-// import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 import Image from 'next/image'
 
-import { mainnet, useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useEnsName, useBalance } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-// import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-// import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-// import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-import { goerli, optimism, optimismGoerli } from 'wagmi/dist/chains'
+import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
+
+
+export let balanceGoerli: string | undefined = "0"
+export let balanceOptimismGoerli: string | undefined = "0"
 
 export default function Login() {
   const [open, setOpen] = useState(false)
   const cancelButtonRef = useRef(null)
 
+  /*useAccount */
   const { address, isConnected } = useAccount()
   const { data: ensName } = useEnsName({ address })
   const { disconnect } = useDisconnect()
 
-  // connect wallet
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  })
-  // const connector = new CoinbaseWalletConnector({
-  //   chains: [mainnet, goerli, optimism, optimismGoerli],
-  //   options: {
-  //     appName: 'Quix App',
-  //     jsonRpcUrl: [
-  //       `https://eth-mainnet.g.alchemy.com/v2/${process.env.ETH_MAINNET_APIKET}`,
-  //       `https://eth-goerli.g.alchemy.com/v2/${process.env.ETH_GOERLI_APIKEY}`,
-  //       `https://opt-mainnet.g.alchemy.com/v2/${process.env.OP_MAINNET_APIKEY}`,
-  //       `https://opt-goerli.g.alchemy.com/v2/${process.env.OP_GOERLI_APIKEY}`
-  //     ]
-  //   }
-  // })
 
-  // const connector = new MetaMaskConnector()
-  // const connector = new WalletConnectConnector({
-  //   options: {
-  //     projectId: 'a83747f94dde941f9f5cb34fe68907aa',
-  //     metadata: {
-  //       name: 'Quix App',
-  //       description: 'my learn web3 app',
-  //       url: 'http://localhost:3000',
-  //       icons: ['https://wagmi.sh/icon.png'],
-  //     },
-  //   },
-  // })
+  /*connect wallet*/
+  const { connect } = useConnect({
+    connector: new InjectedConnector({
+      chains: [optimismGoerli, goerli],
+    }),
+  })
+
+  /*useBalance*/
+  const { data: dataChain5, isError: isErrorChain5, isLoading: isLoadingChain5 } = useBalance({
+    address: address,
+    chainId: 5,
+  })
+
+  const { data: dataChain420, isError: isErrorChain420, isLoading: isLoadingChain420 } = useBalance({
+    address: address,
+    chainId: 420,
+  })
+
+
+  balanceGoerli = dataChain5?.formatted
+  balanceOptimismGoerli = dataChain420?.formatted
+
+  // if (isLoading) return <div>Fetching balance…</div>
+  // if (isError) return <div>Error fetching balance</div>
+  // if (data) return <div>{data?.formatted } {data?.symbol}</div>
 
   if (isConnected)
     return (
-      <div className='w-20 text-center'>
-
-        <button onClick={() => disconnect()}>{ensName ?? (address && address.slice(0, 6))}</button>
+      <div className='w-full text-center'>
+        <button onClick={() => disconnect()}>
+          {ensName ?? (address && address.slice(0, 6))}
+        </button>
       </div>
     )
 
   return (
     <>
-      {/* <div className='w-20'>
-        <button
-          
-          className="bg-red-500 text-white  px-4 py-1.5"
-        >
-          <strong>Connect</strong>
-        </button>
-      </div> */}
       <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
         onClick={() => setOpen(true)}
       >
@@ -148,5 +142,6 @@ export default function Login() {
     </>
   )
 }
+
 
 

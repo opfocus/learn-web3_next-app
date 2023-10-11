@@ -1,5 +1,5 @@
 import Search from "./Search/Search"
-import Account from "./Account/Accout"
+import Account from "./account/accout"
 import Image from "next/image"
 
 function Header() {
