@@ -3,6 +3,7 @@ import { DepositOrWithdrawProps } from '../page'
 import EthereumMainnet from './ethereumMainnet'
 import OpMainnet from "./opMainnet"
 import { balanceOptimismGoerli } from '@/app/components/Header/account/login'
+import { blockNumberOptimismGoerli } from '@/app/components/Header/account/login'
 
 function ToNetwork({ isDeposit }: DepositOrWithdrawProps) {
 
@@ -21,7 +22,7 @@ function ToNetwork({ isDeposit }: DepositOrWithdrawProps) {
           You will receive:
         </div>
         <div>
-          Balance: {balanceOptimismGoerli} ETH
+          Balance: {balanceOptimismGoerli} ETH BlockNumber: {blockNumberOptimismGoerli}
         </div>
       </div>
     </div>
