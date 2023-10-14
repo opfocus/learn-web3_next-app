@@ -1,21 +1,25 @@
 "use client"
+
 export interface DepositOrWithdrawProps {
   isDeposit?: boolean;
-  setIsDeposit?: (value: boolean) => void; // 添加类型注解
+  setIsDeposit?: (value: boolean) => void;
+  bridgeAmount?: number;
+  setBridgeAmount?: (value: number) => void;
 }
 
+
 import { useState } from "react"
+
 import FromNetwork from "./components/fromNetwork"
 import Arrow from "./components/arrow"
-import ConnectWallet from "./components/bridgeProcess"
+import BridgeProcess from "./components/bridgeProcess";
 import DepositOrWithdraw from "./components/DepositOrWithdraw"
-import OpNetWork from "./components/toNetwork"
+import ToNetwork from "./components/toNetwork";
 
 
 function BridgePage() {
   const [isDeposit, setIsDeposit] = useState(true)
-
-
+  const [bridgeAmount, setBridgeAmount] = useState(0)
 
   return (
     <div className='flex justify-center px-5 h-screen bg-gray-200'>
@@ -24,10 +28,10 @@ function BridgePage() {
         <div className="bg-white mt-7 p-6  rounded-2xl shadow-2xl w-full ">
           <div>
             <DepositOrWithdraw isDeposit={isDeposit} setIsDeposit={setIsDeposit} />
-            <FromNetwork isDeposit={isDeposit} />
+            <FromNetwork isDeposit={isDeposit} setBridgeAmount={setBridgeAmount} />
             <Arrow />
-            <OpNetWork isDeposit={isDeposit} />
-            <ConnectWallet />
+            <ToNetwork isDeposit={isDeposit} bridgeAmount={bridgeAmount} />
+            <BridgeProcess bridgeAmount={bridgeAmount} />
           </div>
         </div>
         {/* 2  get test token*/}

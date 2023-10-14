@@ -1,29 +1,28 @@
+"use client"
+
 import { useState } from 'react'
 
 import Login from "../../components/Header/account/login"
-import { walletIsConnected } from "../../components/Header/account/login"
-import { useEthersSigner } from '@/hook/ethers'
 
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { DepositOrWithdrawProps } from "../page"
+
+import { useEthersSigner } from '@/hook/ethers'
+import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'
 import { CrossChainMessenger } from '@eth-optimism/sdk'
 
-import { bridgeETHAmount } from './fromNetwork'
-
-let a = true
 let crossChainMessenger: any
+let count = true
 
-//need modify
-let bridgeETHAmount1: number
-//need modify 
-if (!bridgeETHAmount)
-  bridgeETHAmount1 = 1
-const depositETH = async () => {
-  const response = await crossChainMessenger.depositETH(bridgeETHAmount1 * 10 ** 9)
+const depositETH = async (amount: bigint) => {
+  const response = await crossChainMessenger.depositETH(amount)
   await response.wait()
 }
-function BridgeProcess() {
+function BridgeProcess({ bridgeAmount }: DepositOrWithdrawProps) {
   /* bridge process: connectWallet, bridgeStart, switchNetwork */
-  const [bridgeProcess, setBridgeProcess] = useState("connectWallet")
+  const [bridgeProcess, setBridgeProcess] = useState("")
+
+  /*useAccount */
+  const { address, isConnected } = useAccount()
 
   /*switch network*/
   const { chain } = useNetwork()
@@ -47,40 +46,60 @@ function BridgeProcess() {
     })
   }
 
-  if (a && walletIsConnected) {
+  if (isConnected && count) {
     setBridgeProcess("bridgeStart")
-    a = !a
+    count = false
   }
 
-
-  if (bridgeProcess === "connectWallet")
+  if (!isConnected)
     return (
       <div className="mt-4">
         < Login />
       </div>
     )
   // need modify
-  else if (chain?.id === 5 && bridgeProcess === "bridgeStart" && bridgeETHAmount1 > 0)
+  else if (chain?.id === 5 && bridgeProcess === "bridgeStart" && bridgeAmount! > 0)
     return (
       <div className="mt-4">
-        <button onClick={() => { setBridgeProcess("waitBridge"); depositETH() }}>
-          Start Bridge
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => { setBridgeProcess("waitBridge"); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
+          <div className=" font-semibold text-white text-xl">
+            Start Bridge
+          </div>
         </button>
       </div>
     )
   else if (chain?.id !== 5 && bridgeProcess === "bridgeStart")
     return (
       <div className="mt-4">
-        <button onClick={() => switchNetwork?.(5)}>
-          Switch Network to Goerli
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => switchNetwork?.(5)}>
+          <div className=" font-semibold text-white text-xl">
+            Switch Network to Goerli
+          </div>
+        </button >
+
+      </div >
+    )
+  else if (bridgeProcess === "waitBridge")
+    return (
+      <div className="mt-4">
+        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+        >
+          <div className=" font-semibold text-white text-xl">
+            Waiting Bridge Complete
+          </div>
         </button>
       </div>
     )
   else
     return (
       <div className="mt-4">
-        <button>
-          Some Error
+        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+        >
+          <div className=" font-semibold text-white text-xl">
+            Start Bridge
+          </div>
         </button>
       </div>
     )

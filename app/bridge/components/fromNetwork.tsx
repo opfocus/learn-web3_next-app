@@ -1,5 +1,8 @@
+"use client"
+
 import Image from "next/image"
-import { useState } from "react"
+
+import { useBalance, useAccount } from 'wagmi'
 
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
@@ -7,18 +10,22 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 import { DepositOrWithdrawProps } from "../page"
 import OpMainnet from "./opMainnet"
-import { balanceGoerli } from "@/app/components/Header/account/login"
-import { blockNumberGoerli } from "@/app/components/Header/account/login"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export let bridgeETHAmount: number | undefined
-function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
-  const [bridgeAmount, setBridgeAmount] = useState(0)
+function FromNetwork({ isDeposit, setBridgeAmount }: DepositOrWithdrawProps) {
 
-  let bridgeETHAmount = bridgeAmount
+  /*useAccount */
+  const { address } = useAccount()
+  /*useBalance*/
+  const { data, isError, isLoading } = useBalance({
+    address: address,
+    chainId: 5,
+    formatUnits: "ether",
+  })
+
   return (
     <div className="flex flex-col gap-2 p-4 bg-gray-200 rounded-lg">
       <div className=" flex flex-row justify-start items-center ">
@@ -121,7 +128,7 @@ function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
         <input type="text"
           className="w-3/4 text-2xl font-bold  focus:outline-none"
           placeholder="0.0"
-          onChange={(event) => setBridgeAmount(parseFloat(event.target.value))}
+          onChange={(event) => setBridgeAmount!(parseFloat(event.target.value))}
         />
         <button className="w-1/4 flex flex-row gap-2 justify-center items-center">
           <Image src='/ethereum.png' alt="ethereum logo" width={24} height={24} className="rounded-full" />
@@ -131,9 +138,13 @@ function FromNetwork({ isDeposit }: DepositOrWithdrawProps) {
           </svg>
         </button>
       </div>
-      <div>
-        Balance: {balanceGoerli} ETH BlockNuber: {blockNumberGoerli}
-      </div>
+      {(typeof data == "undefined") ?
+        <div></div>
+        :
+        <div>
+          Balance: {parseFloat(data.formatted).toFixed(6)} ETH
+        </div>
+      }
     </div>
   )
 }

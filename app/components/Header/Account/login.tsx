@@ -7,18 +7,10 @@ import Image from 'next/image'
 
 import { useAccount, useConnect, useDisconnect, useEnsName, useBalance, useBlockNumber, useNetwork } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
 
 
-export let balanceGoerli: string | undefined = "0"
-export let balanceOptimismGoerli: string | undefined = "0"
-export let blockNumberGoerli: string | undefined = "0"
-export let blockNumberOptimismGoerli: string | undefined = "0"
 
-export let walletIsConnected = false
 
 
 export default function Login() {
@@ -27,9 +19,9 @@ export default function Login() {
 
   /*useAccount */
   const { address, isConnected } = useAccount()
+
+  /*ENS*/
   const { data: ensName } = useEnsName({ address })
-
-
 
   /*connect wallet*/
   const { connect } = useConnect({
@@ -37,36 +29,11 @@ export default function Login() {
       chains: [optimismGoerli, goerli],
     }),
   })
+
   /*disconnect*/
   const { disconnect } = useDisconnect()
 
-  /*useBalance*/
-  const { data: dataChain5, isError: isErrorChain5, isLoading: isLoadingChain5 } = useBalance({
-    address: address,
-    chainId: 5,
-  })
 
-  const { data: dataChain420, isError: isErrorChain420, isLoading: isLoadingChain420 } = useBalance({
-    address: address,
-    chainId: 420,
-  })
-  /*useBlockNumber*/
-  const { data: blockNumberChain5 } = useBlockNumber({
-    chainId: 5,
-  })
-  const { data: blockNumberChain420 } = useBlockNumber({
-    chainId: 420,
-  })
-
-  walletIsConnected = isConnected
-  balanceGoerli = dataChain5?.formatted
-  balanceOptimismGoerli = dataChain420?.formatted
-  blockNumberGoerli = blockNumberChain5?.toString()
-  blockNumberOptimismGoerli = blockNumberChain420?.toString()
-
-  // if (isLoading) return <div>Fetching balance…</div>
-  // if (isError) return <div>Error fetching balance</div>
-  // if (data) return <div>{data?.formatted } {data?.symbol}</div>
 
   if (isConnected)
     return (
