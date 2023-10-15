@@ -20,12 +20,16 @@ function FromNetwork({ isDeposit, setBridgeAmount }: DepositOrWithdrawProps) {
   /*useAccount */
   const { address } = useAccount()
   /*useBalance*/
-  const { data, isError, isLoading } = useBalance({
+  const { data: etherBalance } = useBalance({
     address: address,
     chainId: 5,
     formatUnits: "ether",
   })
-
+  const { data: optimismBalance } = useBalance({
+    address: address,
+    chainId: 420,
+    formatUnits: "ether",
+  })
   return (
     <div className="flex flex-col gap-2 p-4 bg-gray-200 rounded-lg">
       <div className=" flex flex-row justify-start items-center ">
@@ -138,11 +142,13 @@ function FromNetwork({ isDeposit, setBridgeAmount }: DepositOrWithdrawProps) {
           </svg>
         </button>
       </div>
-      {(typeof data == "undefined") ?
-        <div></div>
+      {isDeposit ?
+        <div>
+          Balance: {parseFloat(etherBalance ? etherBalance.formatted! : '0').toFixed(6)} ETH
+        </div>
         :
         <div>
-          Balance: {parseFloat(data.formatted).toFixed(6)} ETH
+          Balance: {parseFloat(optimismBalance ? optimismBalance.formatted! : "0").toFixed(6)} ETH
         </div>
       }
     </div>

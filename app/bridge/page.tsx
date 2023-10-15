@@ -31,7 +31,7 @@ function BridgePage() {
             <FromNetwork isDeposit={isDeposit} setBridgeAmount={setBridgeAmount} />
             <Arrow />
             <ToNetwork isDeposit={isDeposit} bridgeAmount={bridgeAmount} />
-            <BridgeProcess bridgeAmount={bridgeAmount} />
+            <BridgeProcess bridgeAmount={bridgeAmount} isDeposit={isDeposit} />
           </div>
         </div>
         {/* 2  get test token*/}
