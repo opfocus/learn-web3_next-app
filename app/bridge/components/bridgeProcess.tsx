@@ -11,11 +11,12 @@ import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'
 import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
 
 let crossChainMessenger: any
+let crossChainMessenger1: any
 let count = true
 
 
 function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
-  /* process: watingDeposted, proveMessage, waitingProve,  finalizeMessage, waitingFinalize, relayed*/
+  /* process:connectWallet, switchNetwork, deposit, waitSign, depositing, completed, withdraw, proveMessage, waitingProve,  finalizeMessage, waitingFinalize*/
   const [bridgeProcess, setBridgeProcess] = useState("")
   const [hash, setHash] = useState("")
 
@@ -34,6 +35,8 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     chainId: 420,
   })
 
+
+
   /*crossChainMessenger*/
   if (l1Signer && l2Signer) {
     crossChainMessenger = new CrossChainMessenger({
@@ -42,15 +45,37 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
       l1SignerOrProvider: l1Signer,
       l2SignerOrProvider: l2Signer,
     })
+    crossChainMessenger1 = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer,
+      l2SignerOrProvider: l2Signer,
+    })
   }
 
-
+  const checkStatus = (hash: string) => {
+    crossChainMessenger1.getMessageStatus(hash)
+      .then((i: number) => {
+        if (i === 1)
+          setBridgeProcess("fail")
+        else if (i === 3)
+          setBridgeProcess("proveMessage")
+        else if (i === 4)
+          setBridgeProcess("challengePeriod")
+        else if (i === 5)
+          setBridgeProcess("finalizeMessage")
+        else if (i === 6)
+          setBridgeProcess("completed")
+        else
+          setBridgeProcess("")
+      })
+  }
   /* Deposit ETH */
   const depositETH = async (amount: bigint) => {
     const response = await crossChainMessenger.depositETH(amount)
     await response.wait()
-    await crossChainMessenger.waitForMessageStatus(response.hash, MessageStatus.RELAYED)
-    setBridgeProcess("relayed")
+    setHash(response.hash)
+    setBridgeProcess("checkStatus")
   }
   /* Withdraw ETH */
   const withdrawETH = async (amount: bigint) => {
@@ -96,13 +121,13 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
       </div >
     )
   // deposit
-  else if (isDeposit && chain?.id === 5 && bridgeAmount! === 0)
+  else if (isDeposit && chain?.id === 5 && bridgeAmount! <= 0)
     return (
       <div className="mt-4">
         <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => { setBridgeProcess("waitBridge"); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
+          onClick={() => { depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
           <div className=" font-semibold text-white text-xl">
-            Start Bridge
+            Deposit
           </div>
         </button>
       </div>
@@ -111,20 +136,32 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => { setBridgeProcess("waitDeposited"); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
+          onClick={() => { setBridgeProcess("depositing"); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
           <div className=" font-semibold text-white text-xl">
-            Start Bridge
+            Deposit
           </div>
         </button>
       </div>
     )
-  else if (isDeposit && bridgeProcess === "waitDeposited")
+  else if (bridgeProcess === "depositing")
     return (
       <div className="mt-4">
         <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => { setBridgeProcess("depositing"); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
+          <div className=" font-semibold text-white text-xl">
+            Depositing
+          </div>
+        </button>
+      </div>
+    )
+  else if (isDeposit && bridgeProcess === "checkStatus")
+    return (
+      <div className="mt-4">
+        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => checkStatus(hash)}
         >
           <div className=" font-semibold text-white text-xl">
-            Waiting Deposited
+            Check Progress
           </div>
         </button>
       </div>
@@ -234,17 +271,28 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
       </div>
     )
 
-  else (bridgeProcess === "relayed")
-  return (
-    <div className="mt-4">
-      <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-      >
-        <div className=" font-semibold text-white text-xl">
-          Completed
-        </div>
-      </button>
-    </div>
-  )
+  else if (bridgeProcess === "completed")
+    return (
+      <div className="mt-4">
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => setBridgeProcess("")} >
+          <div className=" font-semibold text-white text-xl">
+            Completed, Continue?
+          </div>
+        </button>
+      </div>
+    )
+  else if (bridgeProcess === "fail")
+    return (
+      <div className="mt-4">
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => setBridgeProcess("")} >
+          <div className=" font-semibold text-white text-xl">
+            Failed, Continue?
+          </div>
+        </button>
+      </div>
+    )
 }
 
 export default BridgeProcess
