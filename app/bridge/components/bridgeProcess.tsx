@@ -9,6 +9,7 @@ import { DepositOrWithdrawProps } from "../page"
 import { useEthersSigner } from '@/hook/ethers'
 import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'
 import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
+import { ethers } from 'ethers'
 
 let crossChainMessenger: any
 let crossChainMessenger1: any
@@ -19,6 +20,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   /* process:connectWallet, switchNetwork, deposit, waitSign, depositing, completed, withdraw, proveMessage, waitingProve,  finalizeMessage, waitingFinalize*/
   const [bridgeProcess, setBridgeProcess] = useState("")
   const [hash, setHash] = useState("")
+  const [checkResult, setCheckResult] = useState("")
 
   /*useAccount */
   const { address, isConnected } = useAccount()
@@ -35,7 +37,8 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     chainId: 420,
   })
 
-
+  let l1Provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ETH_GOERLI_APIKEY)
+  let l2Provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_OP_GOERLI_APIKEY)
 
   /*crossChainMessenger*/
   if (l1Signer && l2Signer) {
@@ -48,8 +51,8 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     crossChainMessenger1 = new CrossChainMessenger({
       l1ChainId: 5,
       l2ChainId: 420,
-      l1SignerOrProvider: l1Signer,
-      l2SignerOrProvider: l2Signer,
+      l1SignerOrProvider: l1Provider,
+      l2SignerOrProvider: l2Provider,
     })
   }
 
@@ -66,16 +69,21 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           setBridgeProcess("finalizeMessage")
         else if (i === 6)
           setBridgeProcess("completed")
-        else
-          setBridgeProcess("")
+        else {
+          setBridgeProcess("checkStatus")
+          setCheckResult(": in progress")
+        }
+        console.log("i", i)
       })
   }
   /* Deposit ETH */
   const depositETH = async (amount: bigint) => {
     const response = await crossChainMessenger.depositETH(amount)
     await response.wait()
+    console.log("1", response.hash)
     setHash(response.hash)
     setBridgeProcess("checkStatus")
+    console.log("2", response.hash)
   }
   /* Withdraw ETH */
   const withdrawETH = async (amount: bigint) => {
@@ -132,7 +140,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (isDeposit && chain?.id === 5 && bridgeAmount! > 0)
+  else if (isDeposit && chain?.id === 5 && bridgeAmount! > 0 && bridgeProcess === "")
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -157,11 +165,11 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   else if (isDeposit && bridgeProcess === "checkStatus")
     return (
       <div className="mt-4">
-        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
           onClick={() => checkStatus(hash)}
         >
           <div className=" font-semibold text-white text-xl">
-            Check Progress
+            Check Progress{" " + checkResult}
           </div>
         </button>
       </div>
