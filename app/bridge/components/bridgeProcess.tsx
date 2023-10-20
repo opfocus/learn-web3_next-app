@@ -13,7 +13,6 @@ import { ethers } from 'ethers'
 
 let crossChainMessenger: any
 let crossChainMessenger1: any
-let count = true
 
 
 function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
@@ -90,24 +89,34 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     const withdrawResponse = await crossChainMessenger.withdrawETH(amount)
     await withdrawResponse.wait()
     setHash(withdrawResponse.hash)
-    switchNetwork?.(5)
-    await crossChainMessenger.waitForMessageStatus(withdrawResponse.hash,
-      MessageStatus.READY_TO_PROVE)
-    setBridgeProcess("proveMessage")
-
+    // switchNetwork?.(5)
   }
 
   const proveMessage = async (hash: string) => {
-
+    let crossChainMessenger
+    crossChainMessenger = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer!,
+      l2SignerOrProvider: l2Provider!,
+    })
+    console.log("1", hash)
     await crossChainMessenger.proveMessage(hash)
-    await crossChainMessenger.waitForMessageStatus(hash, MessageStatus.READY_FOR_RELAY)
-    setBridgeProcess("finalizeMessage")
+    console.log("2", hash)
   }
 
   const finalizeMessage = async (hash: string) => {
+    let crossChainMessenger
+    crossChainMessenger = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer!,
+      l2SignerOrProvider: l2Provider!,
+    })
     await crossChainMessenger.finalizeMessage(hash)
-    await crossChainMessenger.waitForMessageStatus(hash, MessageStatus.RELAYED)
-    setBridgeProcess("relayed")
+    await crossChainMessenger1.waitForMessageStatus(hash,
+      MessageStatus.READY_FOR_RELAY)
+    setBridgeProcess("completed")
   }
 
 
@@ -151,7 +160,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (bridgeProcess === "depositing")
+  else if (isDeposit && bridgeProcess === "depositing")
     return (
       <div className="mt-4">
         <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -175,7 +184,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
       </div>
     )
   // withdraw
-  else if (!isDeposit && chain?.id !== 420 && bridgeProcess === '')
+  else if (!isDeposit && chain?.id !== 420 && (bridgeProcess === '' || bridgeProcess === "Depositing"))
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -187,7 +196,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
 
       </div >
     )
-  else if (!isDeposit && chain?.id === 420 && bridgeAmount! === 0)
+  else if (!isDeposit && chain?.id === 420 && bridgeAmount! === 0 && bridgeProcess !== 'proveMessage')
     return (
       <div className="mt-4">
         <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -198,7 +207,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (!isDeposit && chain?.id === 420 && bridgeAmount! > 0)
+  else if (!isDeposit && chain?.id === 420 && bridgeAmount! > 0 && bridgeProcess === '')
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -209,7 +218,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (chain?.id === 420 && bridgeProcess === "waitingProve")
+  else if (chain?.id === 5 && bridgeProcess === "waitingProve")
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
@@ -221,14 +230,26 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (chain?.id === 5 && bridgeProcess === "waitingProve")
+  else if (chain?.id === 420 && bridgeProcess === "waitingProve")
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-
+          onClick={() => checkStatus(hash)}
         >
           <div className=" font-semibold text-white text-xl">
             Wait Prove Message
+          </div>
+        </button>
+      </div>
+    )
+  else if (!isDeposit && bridgeProcess === "checkStatus")
+    return (
+      <div className="mt-4">
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => checkStatus(hash)}
+        >
+          <div className=" font-semibold text-white text-xl">
+            Check Progress
           </div>
         </button>
       </div>
@@ -247,7 +268,8 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   else if (bridgeProcess === "waitingFinalize")
     return (
       <div className="mt-4">
-        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => checkStatus(hash)}
         >
           <div className=" font-semibold text-white text-xl">
             Waiting Finalize Message
@@ -258,8 +280,8 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   else if (bridgeProcess === "finalizeMessage")
     return (
       <div className="mt-4">
-        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => { finalizeMessage(hash); setBridgeProcess("waitingRelayed") }}
+        <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+          onClick={() => { finalizeMessage(hash) }}
         >
           <div className=" font-semibold text-white text-xl">
             Finalize Message
@@ -267,17 +289,18 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
-  else if (bridgeProcess === "waitingRelayed")
-    return (
-      <div className="mt-4">
-        <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-        >
-          <div className=" font-semibold text-white text-xl">
-            Wait Completed
-          </div>
-        </button>
-      </div>
-    )
+  // else if (bridgeProcess === "waitingRelayed")
+  //   return (
+  //     <div className="mt-4">
+  //       <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+  //         onClick={() => checkStatus(hash)}
+  //       >
+  //         <div className=" font-semibold text-white text-xl">
+  //           Check Process
+  //         </div>
+  //       </button>
+  //     </div>
+  //   )
 
   else if (bridgeProcess === "completed")
     return (
