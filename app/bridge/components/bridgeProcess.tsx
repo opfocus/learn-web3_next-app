@@ -15,11 +15,11 @@ let crossChainMessenger: any
 let crossChainMessenger1: any
 
 
-function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
+function BridgeProcess({ bridgeAmount, isDeposit, hash, setHash, checkResult, setCheckResult, setInitTime }: DepositOrWithdrawProps) {
   /* process:connectWallet, switchNetwork, deposit, waitSign, depositing, completed, withdraw, proveMessage, waitingProve,  finalizeMessage, waitingFinalize*/
   const [bridgeProcess, setBridgeProcess] = useState("")
-  const [hash, setHash] = useState("")
-  const [checkResult, setCheckResult] = useState("")
+  //迁移 const [hash, setHash] = useState("")'
+  //迁移 const [checkResult, setCheckResult] = useState("")
 
   /*useAccount */
   const { address, isConnected } = useAccount()
@@ -70,7 +70,6 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           setBridgeProcess("completed")
         else {
           setBridgeProcess("checkStatus")
-          setCheckResult(": in progress")
         }
         console.log("i", i)
       })
@@ -80,7 +79,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     const response = await crossChainMessenger.depositETH(amount)
     await response.wait()
     console.log("1", response.hash)
-    setHash(response.hash)
+    setHash!(response.hash)
     setBridgeProcess("checkStatus")
     console.log("2", response.hash)
   }
@@ -88,7 +87,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   const withdrawETH = async (amount: bigint) => {
     const withdrawResponse = await crossChainMessenger.withdrawETH(amount)
     await withdrawResponse.wait()
-    setHash(withdrawResponse.hash)
+    setHash!(withdrawResponse.hash)
     // switchNetwork?.(5)
   }
 
@@ -175,7 +174,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => checkStatus(hash)}
+          onClick={() => checkStatus(hash!)}
         >
           <div className=" font-semibold text-white text-xl">
             Check Progress{" " + checkResult}
@@ -234,7 +233,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => checkStatus(hash)}
+          onClick={() => checkStatus(hash!)}
         >
           <div className=" font-semibold text-white text-xl">
             Wait Prove Message
@@ -246,7 +245,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => checkStatus(hash)}
+          onClick={() => checkStatus(hash!)}
         >
           <div className=" font-semibold text-white text-xl">
             Check Progress
@@ -258,7 +257,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => { proveMessage(hash); setBridgeProcess("waitingFinalize") }}>
+          onClick={() => { proveMessage(hash!); setBridgeProcess("waitingFinalize") }}>
           <div className=" font-semibold text-white text-xl">
             Prove Message
           </div>
@@ -269,7 +268,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => checkStatus(hash)}
+          onClick={() => checkStatus(hash!)}
         >
           <div className=" font-semibold text-white text-xl">
             Waiting Finalize Message
@@ -281,7 +280,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
     return (
       <div className="mt-4">
         <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-          onClick={() => { finalizeMessage(hash) }}
+          onClick={() => { finalizeMessage(hash!) }}
         >
           <div className=" font-semibold text-white text-xl">
             Finalize Message
@@ -324,6 +323,9 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
         </button>
       </div>
     )
+  return (
+    <>Some Error</>
+  )
 }
 
 export default BridgeProcess

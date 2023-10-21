@@ -1,10 +1,16 @@
 "use client"
 
 export interface DepositOrWithdrawProps {
-  isDeposit?: boolean;
+  isDeposit: boolean;
   setIsDeposit?: (value: boolean) => void;
   bridgeAmount?: number;
   setBridgeAmount?: (value: number) => void;
+  hash?: string;
+  setHash?: (value: string) => void;
+  checkResult?: number;
+  setCheckResult?: (value: number) => void;
+  initTime?: string;
+  setInitTime?: (value: string) => void;
 }
 
 
@@ -20,6 +26,10 @@ import ToNetwork from "./components/toNetwork";
 function BridgePage() {
   const [isDeposit, setIsDeposit] = useState(true)
   const [bridgeAmount, setBridgeAmount] = useState(0)
+  const [hash, setHash] = useState("")
+  const [checkResult, setCheckResult] = useState("")
+  const [initTime, setInitTime] = useState("")
+
 
   return (
     <div className='flex justify-center px-5 h-screen bg-gray-200'>
@@ -31,7 +41,13 @@ function BridgePage() {
             <FromNetwork isDeposit={isDeposit} setBridgeAmount={setBridgeAmount} />
             <Arrow />
             <ToNetwork isDeposit={isDeposit} bridgeAmount={bridgeAmount} />
-            <BridgeProcess bridgeAmount={bridgeAmount} isDeposit={isDeposit} />
+            <BridgeProcess
+              bridgeAmount={bridgeAmount}
+              isDeposit={isDeposit}
+              hash={hash}
+              setHash={setHash}
+              setInitTime={setInitTime}
+            />
           </div>
         </div>
         {/* 2  get test token*/}
