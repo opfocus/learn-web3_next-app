@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-import Login from "../../components/Header/account/login"
+import Login from '@/app/components/Header/account/login'
 
-import { DepositOrWithdrawProps } from "../page"
+import { DepositOrWithdrawProps } from "./../bridgeOp"
 
 import { useEthersSigner } from '@/hook/ethers'
 import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'
@@ -15,11 +15,11 @@ let crossChainMessenger: any
 let crossChainMessenger1: any
 
 
-function BridgeProcess({ bridgeAmount, isDeposit, hash, setHash, checkResult, setCheckResult, setInitTime }: DepositOrWithdrawProps) {
+function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   /* process:connectWallet, switchNetwork, deposit, waitSign, depositing, completed, withdraw, proveMessage, waitingProve,  finalizeMessage, waitingFinalize*/
   const [bridgeProcess, setBridgeProcess] = useState("")
-  //迁移 const [hash, setHash] = useState("")'
-  //迁移 const [checkResult, setCheckResult] = useState("")
+  const [hash, setHash] = useState("")
+  const [checkResult, setCheckResult] = useState("")
 
   /*useAccount */
   const { address, isConnected } = useAccount()
