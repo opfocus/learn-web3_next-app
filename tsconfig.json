@@ -36,7 +36,8 @@
     "app/components/Header/account/NextAuth.js",
     "app/components/Header/account/NextAuth.js",
     "app/components/Header/account/Accout.jsx",
-    "app/components/Header/account/NextAuth.js"
+    "app/components/Header/account/NextAuth.js",
+    "app/bridge/view_account"
   ],
   "exclude": [
     "node_modules"

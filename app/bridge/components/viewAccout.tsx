@@ -12,7 +12,7 @@ function ViewAccout() {
           You have assets ready to withdraw to Goerli
         </div>
       </div>
-      <Link href={"./bridge/account"} className="p-2 flex items-center text-sm   bg-red-500 text-white rounded-lg ">
+      <Link href={"./bridge/account/deposit"} className="p-2 flex items-center text-sm   bg-red-500 text-white rounded-lg ">
         <div>
           View account
         </div>
