@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { account } from "@/app/components/Header/account/login"
 
 function AccountLayout({ children }: {
   children: React.ReactNode
@@ -24,7 +25,7 @@ function AccountLayout({ children }: {
                 Account
               </div>
               <div className="pt-2">
-                0xAa38b3bebd086A36A87f8b1f975df331fFa7aA11
+                {account}
               </div>
             </div>
           </div>

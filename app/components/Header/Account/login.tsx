@@ -5,13 +5,13 @@ import { Dialog, Transition } from '@headlessui/react'
 
 import Image from 'next/image'
 
-import { useAccount, useConnect, useDisconnect, useEnsName, useBalance, useBlockNumber, useNetwork } from 'wagmi'
+import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
 
 
 
-
+export let account: string | undefined
 
 export default function Login() {
   const [open, setOpen] = useState(false)
@@ -19,6 +19,8 @@ export default function Login() {
 
   /*useAccount */
   const { address, isConnected } = useAccount()
+  account = address
+  console.log("ddddd", account)
 
   /*ENS*/
   const { data: ensName } = useEnsName({ address })

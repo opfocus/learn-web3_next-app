@@ -1,5 +1,8 @@
+import { useAccount } from 'wagmi'
+
 
 function WithdrawPage() {
+  const { address, isConnected } = useAccount()
 
   return (
     <div className="px-9 py-8 w-full border-t border-gray-200">
