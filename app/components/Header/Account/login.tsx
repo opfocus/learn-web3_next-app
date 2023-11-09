@@ -9,7 +9,7 @@ import { useAccount, useConnect, useDisconnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { goerli, optimism, optimismGoerli } from 'wagmi/chains'
 
-
+import { deposits, sdkViewAccount, withdrawals } from "@/utils/commonFunctions"
 
 export let account: string | undefined
 
@@ -20,7 +20,7 @@ export default function Login() {
   /*useAccount */
   const { address, isConnected } = useAccount()
   account = address
-  console.log("ddddd", account)
+  console.log("account---text1", account)
 
   /*ENS*/
   const { data: ensName } = useEnsName({ address })
@@ -35,7 +35,8 @@ export default function Login() {
   /*disconnect*/
   const { disconnect } = useDisconnect()
 
-
+  if (address)
+    sdkViewAccount(address)
 
   if (isConnected)
     return (
@@ -45,6 +46,8 @@ export default function Login() {
         </button>
       </div>
     )
+
+
 
   return (
     <>

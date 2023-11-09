@@ -1,14 +1,18 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 
 import { account } from "@/app/components/Header/account/login"
+
+
 
 function AccountLayout({ children }: {
   children: React.ReactNode
 }) {
 
   return (
-    <div className='flex justify-center px-5 h-screen bg-gray-200'>
+    <div className='flex justify-center px-5  bg-gray-200'>
       <div className=" mt-14 mb-20  rounded-2xl w-full max-w-6xl bg-white">
         <div className=" p-9 flex flex-row justify-between">
           <div className=" flex flex-row items-center">

@@ -1,5 +1,5 @@
-
-
+//View account tx
+// 
 import { ethers } from 'ethers'
 import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
 
@@ -34,6 +34,16 @@ const ERC20ABI = [
   }
 ]     // ERC20ABI
 
+// --export
+export let deposits = [{
+  transactionHash: "",
+  amount: 0
+}]
+export let withdrawals = [{
+  transactionHash: "",
+  amount: 0
+}]
+
 const getSymbol = async (l1Addr: string) => {
   if (l1Addr == '0x0000000000000000000000000000000000000000')
     return "ETH"
@@ -41,25 +51,8 @@ const getSymbol = async (l1Addr: string) => {
   return await l1Contract.symbol()
 }   // getSymbol
 
-// Describe a cross domain transaction, either deposit or withdrawal
-const describeTx = async (tx: any) => {
-  console.log(`tx:${tx.transactionHash}`)
-  // Assume all tokens have decimals = 18
-  console.log(`\tAmount: ${tx.amount / 1e18} ${await getSymbol(tx.l1Token)}`)
-  console.log(`\tRelayed: ${await crossChainMessenger.getMessageStatus(tx.transactionHash)
-    == MessageStatus.RELAYED}`)
-}  // describeTx
-
 export const sdkViewAccount = async (addr: string) => {
   await setup()
-
-  const deposits = await crossChainMessenger.getDepositsByAddress(addr)
-  console.log(`Deposits by address ${addr}`)
-  for (var i = 0; i < deposits.length; i++)
-    await describeTx(deposits[i])
-
-  const withdrawals = await crossChainMessenger.getWithdrawalsByAddress(addr)
-  console.log(`\n\n\nWithdrawals by address ${addr}`)
-  for (var i = 0; i < withdrawals.length; i++)
-    await describeTx(withdrawals[i])
+  deposits = await crossChainMessenger.getDepositsByAddress(addr)
+  withdrawals = await crossChainMessenger.getWithdrawalsByAddress(addr)
 }
