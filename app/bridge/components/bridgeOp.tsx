@@ -10,11 +10,11 @@ export interface DepositOrWithdrawProps {
 
 import { useState } from "react"
 
-import FromNetwork from "./bridgeOp/fromNetwork2"
-import Arrow from "./bridgeOp/arrow2"
-import BridgeProcess from "./bridgeOp/bridgeProcess2";
-import DepositOrWithdraw from "./bridgeOp/DepositOrWithdraw2"
-import ToNetwork from "./bridgeOp/toNetwork2";
+import FromNetwork from "./bridgeOp/fromNetwork"
+import Arrow from "./bridgeOp/arrow"
+import BridgeProcess from "./bridgeOp/bridgeProcess";
+import DepositOrWithdraw from "./bridgeOp/DepositOrWithdraw"
+import ToNetwork from "./bridgeOp/toNetwork";
 
 
 
