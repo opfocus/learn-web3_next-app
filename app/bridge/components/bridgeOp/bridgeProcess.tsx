@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import Login from '@/app/components/Header/account/login'
 
-import { DepositOrWithdrawProps } from "./../bridgeOp"
+
 
 import { useEthersSigner } from '@/hook/ethers'
 import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'

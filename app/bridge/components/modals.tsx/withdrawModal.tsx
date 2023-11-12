@@ -1,14 +1,70 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { IsWithdrawModal } from '@/utils/interface'
+import { IsWithdrawModalProps } from '@/utils/type'
+
+import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
+import { useEthersSigner } from '@/hook/ethers'
+import { ethers } from 'ethers'
 
 export default function WithdrawModal({
-  withdrawModal, setWithdrawModal
-}: IsWithdrawModal
+  bridgeAmount, withdrawModal, setWithdrawModal
+}: IsWithdrawModalProps
 ) {
-
+  const [hash, setHash] = useState("")
   const cancelButtonRef = useRef(null)
+
+  // SDK
+  const l1Signer = useEthersSigner({
+    chainId: 5,
+  })
+  const l2Signer = useEthersSigner({
+    chainId: 420,
+  })
+
+  let l1Provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ETH_GOERLI_APIKEY)
+  let l2Provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_OP_GOERLI_APIKEY)
+  let crossChainMessenger: any
+
+  if (l1Signer && l2Signer) {
+    crossChainMessenger = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer,
+      l2SignerOrProvider: l2Signer,
+    })
+  }
+
+  /* Withdraw ETH */
+  const withdrawETH = async (amount: bigint) => {
+    const withdrawResponse = await crossChainMessenger.withdrawETH(amount)
+    await withdrawResponse.wait()
+    setHash!(withdrawResponse.hash)
+    // switchNetwork?.(5)
+  }
+
+  const proveMessage = async (hash: string) => {
+    let crossChainMessenger
+    crossChainMessenger = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer!,
+      l2SignerOrProvider: l2Provider!,
+    })
+    console.log("1", hash)
+    await crossChainMessenger.proveMessage(hash)
+    console.log("2", hash)
+  }
+
+  const finalizeMessage = async (hash: string) => {
+    let crossChainMessenger
+    crossChainMessenger = new CrossChainMessenger({
+      l1ChainId: 5,
+      l2ChainId: 420,
+      l1SignerOrProvider: l1Signer!,
+      l2SignerOrProvider: l2Provider!,
+    })
+    await crossChainMessenger.finalizeMessage(hash)
+  }
 
   return (
     <Transition.Root show={withdrawModal} as={Fragment}>
@@ -38,40 +94,25 @@ export default function WithdrawModal({
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
-                    </div>
-                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                      <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Deactivate account
-                      </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Are you sure you want to deactivate your account? All of your data will be permanently
-                          removed. This action cannot be undone.
-                        </p>
-                      </div>
+                  <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                      Deactivate account
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Are you sure you want to deactivate your account? All of your data will be permanently
+                        removed. This action cannot be undone.
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                    onClick={() => setWithdrawModal(false)}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => setWithdrawModal(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
-                </div>
+
+                <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+                  onClick={() => setWithdrawModal(false)}>
+                  <div className=" font-semibold text-white text-xl">
+                    Deposit
+                  </div>
+                </button>
               </Dialog.Panel>
             </Transition.Child>
           </div>

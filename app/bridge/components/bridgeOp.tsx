@@ -1,11 +1,5 @@
 "use client"
 
-export interface DepositOrWithdrawProps {
-  isDeposit: boolean;
-  setIsDeposit?: (value: boolean) => void;
-  bridgeAmount?: number;
-  setBridgeAmount?: (value: number) => void;
-}
 
 
 import { useState } from "react"

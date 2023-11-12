@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useNetwork, useSwitchNetwork, useAccount } from 'wagmi'
 import Login from '@/app/components/Header/account/login'
-import { DepositOrWithdrawProps } from "./../bridgeOp"
+import { DepositOrWithdrawProps } from "@/utils/type"
 import WithdrawModal from '../modals.tsx/withdrawModal'
 import DepositModal from '../modals.tsx/depositModal'
 
@@ -60,7 +60,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
               Deposit
             </div>
           </button>
-          <DepositModal depositModal={depositModal} setDepositModal={setDepositModal} />
+          <DepositModal bridgeAmount={bridgeAmount!} depositModal={depositModal} setDepositModal={setDepositModal} />
         </div>
       )
 
@@ -99,7 +99,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
               Withdraw
             </div>
           </button>
-          <WithdrawModal withdrawModal={withdrawModal} setWithdrawModal={setWithdrawModal} />
+          <WithdrawModal bridgeAmount={bridgeAmount!} withdrawModal={withdrawModal} setWithdrawModal={setWithdrawModal} />
         </div>
       )
   }
