@@ -6,7 +6,7 @@ import { useState } from "react"
 
 import FromNetwork from "./bridgeOp/fromNetwork"
 import Arrow from "./bridgeOp/arrow"
-import BridgeProcess from "./bridgeOp/bridgeProcess";
+import BridgeProcess from "./bridgeOp/bridgeProcess copy";
 import DepositOrWithdraw from "./bridgeOp/DepositOrWithdraw"
 import ToNetwork from "./bridgeOp/toNetwork";
 

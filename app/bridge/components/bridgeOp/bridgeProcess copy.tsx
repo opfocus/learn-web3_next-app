@@ -46,7 +46,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
             onClick={() => setDepositModal(true)}>
             <div className=" font-semibold text-white text-xl">
-              Deposit
+              Enter amount
             </div>
           </button>
         </div>
@@ -57,7 +57,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
             onClick={() => setDepositModal(true)}>
             <div className=" font-semibold text-white text-xl">
-              Deposit
+              Review deposit
             </div>
           </button>
           <DepositModal bridgeAmount={bridgeAmount!} depositModal={depositModal} setDepositModal={setDepositModal} />
@@ -85,7 +85,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           <button disabled className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
             onClick={() => setWithdrawModal(true)}>
             <div className=" font-semibold text-white text-xl">
-              Withdraw
+              Enter amount
             </div>
           </button>
         </div>
@@ -96,7 +96,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
           <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
             onClick={() => setWithdrawModal(true)}>
             <div className=" font-semibold text-white text-xl">
-              Withdraw
+              Review withdraw
             </div>
           </button>
           <WithdrawModal bridgeAmount={bridgeAmount!} withdrawModal={withdrawModal} setWithdrawModal={setWithdrawModal} />

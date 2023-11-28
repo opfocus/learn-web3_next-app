@@ -1,4 +1,6 @@
-import { Fragment, useRef, useState } from 'react'
+"use client"
+
+import { Dispatch, Fragment, SetStateAction, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { IsDepositModalProps } from '@/utils/type'
 
@@ -6,11 +8,18 @@ import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
 import { useEthersSigner } from '@/hook/ethers'
 import { ethers } from 'ethers'
 
+
+let buttonWords: string
+
 export default function DepositModal({
   bridgeAmount, depositModal, setDepositModal
 }: IsDepositModalProps
 ) {
-  const [hash, setHash] = useState("")
+  const [hash, setHash] = useState({
+    l1TxHash: "",
+    l2TxHash: ""
+  })
+  const [depositProcess, setDepositProcess] = useState("")   // initiate, sending, confirm, bridging, complet
   const cancelButtonRef = useRef(null)
 
   //SDK
@@ -31,10 +40,54 @@ export default function DepositModal({
 
   /* Deposit ETH */
   const depositETH = async (amount: bigint) => {
-    const response = await crossChainMessenger.depositETH(amount)
-    await response.wait()
-    console.log("1", response.hash)
-    setHash(response.hash)
+    crossChainMessenger.depositETH(amount)
+      .then((response: any) => {
+        // Get L1 transaction hash
+        setHash({
+          ...hash,
+          l1TxHash: response.hash
+        })
+        // Sending deposit transaction
+        setDepositProcess("sending")
+        response.wait().then(() => {
+          //Display L1 deposit result 
+          setDepositProcess("confirm")
+          crossChainMessenger.waitForMessageStatus(response.hash,
+            MessageStatus.RELAYED)
+            .then(() => {
+              crossChainMessenger.getMessageReceipt(response.hash)
+                .then((l2Rcpt: any) => {
+                  // Get L2 transaction hash
+                  setHash({
+                    l1TxHash: response.hash,
+                    l2TxHash: l2Rcpt.transactionReceipt.transactionHash
+                  })
+                  setDepositProcess("complete")
+                })
+            })
+        })
+      })
+    // Waiting for wallet signature
+    setDepositProcess("initiate")
+  }
+
+  // functionName and buttonWords
+  switch (depositProcess) {
+    case "":
+      buttonWords = "Deposit"
+      break
+    case "initiate":
+      buttonWords = "Confirm the deposit on your wallet"
+      break
+    case "sending":
+      buttonWords = "Deposit en route to Optimism"
+      break
+    case "confirm":
+      buttonWords = `confirmed on goerli, L1 hash is ${hash.l1TxHash}, bridging...`
+      break
+    default:
+      buttonWords = `Deposit complete! L1 hash is  ${hash.l1TxHash}, L2 hash is ${hash.l2TxHash}`
+      break
   }
 
   return (
@@ -79,16 +132,31 @@ export default function DepositModal({
                   </div>
                 </div>
                 <div className="mt-4">
-                  <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
-                    onClick={() => { setDepositModal(false); depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
-                    <div className=" font-semibold text-white text-xl">
-                      Deposit
-                    </div>
-                  </button>
+                  {
+                    (depositProcess === "") ?
+                      <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"
+                        onClick={() => { depositETH(BigInt(bridgeAmount! * 10 ** 18)) }}>
+                        <div className=" font-semibold text-white text-xl">
+                          {buttonWords}
+                        </div>
+                      </button>
+                      :
+                      <div>
+                        {buttonWords}
+                      </div>
+                  }
                 </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
+        </div>
+        <div>
+          <button className=' focus: bg-gray-400'
+            onClick={() => setDepositModal(false)}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+              <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
       </Dialog>
     </Transition.Root>
