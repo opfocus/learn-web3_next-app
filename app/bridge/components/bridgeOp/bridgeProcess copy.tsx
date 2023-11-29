@@ -67,7 +67,7 @@ function BridgeProcess({ bridgeAmount, isDeposit }: DepositOrWithdrawProps) {
   }
   // withdraw
   else {
-    if (chain?.id !== 420)
+    if (chain?.id !== 420 && withdrawModal === false)
       return (
         <div className="mt-4">
           <button className="flex justify-center rounded-lg bg-red-500 p-4 w-full"

@@ -1,6 +1,6 @@
 "use client"
 
-import { Dispatch, Fragment, SetStateAction, useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { IsDepositModalProps } from '@/utils/type'
 
@@ -8,8 +8,6 @@ import { CrossChainMessenger, MessageStatus } from '@eth-optimism/sdk'
 import { useEthersSigner } from '@/hook/ethers'
 import { ethers } from 'ethers'
 
-
-let buttonWords: string
 
 export default function DepositModal({
   bridgeAmount, depositModal, setDepositModal
@@ -28,6 +26,7 @@ export default function DepositModal({
   })
   let l2Provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_OP_GOERLI_APIKEY)
   let crossChainMessenger: any
+  let buttonWords: string
 
   if (l1Signer) {
     crossChainMessenger = new CrossChainMessenger({
@@ -71,7 +70,7 @@ export default function DepositModal({
     setDepositProcess("initiate")
   }
 
-  // functionName and buttonWords
+  // buttonWords
   switch (depositProcess) {
     case "":
       buttonWords = "Deposit"
